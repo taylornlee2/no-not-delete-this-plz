@@ -11,6 +11,7 @@
 #####
 import Tkinter
 
+
 ####
 # Create the main window
 ####
@@ -23,11 +24,21 @@ root.wm_title('Color-Shape Art Creation')
 editor = Tkinter.Text(root, width=10)
 editor.grid(column=2, row=0, rowspan=3)
 
+
 ######
 # Create a canvas and place it
 #######
 canvas = Tkinter.Canvas(root, height=300, width=300, background='#FFFFFF')
 canvas.grid(row=0, column=1, rowspan=3)
+
+from Tkinter import *
+
+v = IntVar
+
+var1=Radiobutton(root, text = "circle", variable = v, value = 0)
+var1.grid(row = 3, column = 1)
+var2=Radiobutton(root, text = "square", variable = v, value = 1)
+var2.grid(row = 3, column = 0)
 
 ######
 # Instantiate three IntVars
@@ -80,12 +91,12 @@ green_slider = ColorSlider(root, 'Green:', green_intvar, editor, canvas)
 green_slider.grid(row=2, column=0, sticky=Tkinter.W)
 
 blue_slider = ColorSlider(root, 'Blue:', blue_intvar, editor, canvas)
-blue_slider.grid(row=3, column=0, sticky=Tkinter.W)    
+blue_slider.grid(row=0, column=0, sticky=Tkinter.W)    
 
 ######
 # Inform user of mouse interface
 ######
-message = Tkinter.Label(root, text='Drag mouse to\ndraw circles.\nDrag sliders\nto change color.')
+message = Tkinter.Label(root, text='Drag mouse')
 message.grid(column=0, row=0, sticky=Tkinter.N)
 
 #######
@@ -104,21 +115,36 @@ canvas.itemconfig(shapes[4],outline='green')
 #####
 
 # Initialize globals so function defs can assign to them
-startx, starty = 300, 300 
+startx, starty = 300, 300
+
+
 
 # Define canvas' mouse-button event handler
 def down(event): # A mouse event will be passed in with x and y attributes
+    
     global startx, starty # Use global variables for assignment
     startx = event.x # Store the mouse down coordinates in the global variables
     starty = event.y
 
-def up(event):
-    tk_color_string = color(red_intvar, green_intvar, blue_intvar)
-    r = (startx-event.x)**2 + (starty-event.y)**2  # Pythagorean theorem
-    r = int(r**.5)                                 # square root to get distance
-    new_shape = canvas.create_oval(startx-r, starty-r, startx+r, starty+r,
+if v.get()==0:
+    def up(event):
+    
+        tk_color_string = color(red_intvar, green_intvar, blue_intvar)
+        d = (startx-event.x)**2 + (starty-event.y)**2  # Pythagorean theorem
+        d = int(d**.5) # square root to get distance
+        
+        if value == 0:
+            new_shape = canvas.create_rectangle(startx-d, starty-d,startx+d, starty+d,
                                     fill=tk_color_string, outline='#000000')
-    shapes.append(new_shape) # aggregate the canvas' item
+            shapes.append(new_shape) # aggregate the canvas' item
+            
+        if  v.get()==1:
+        
+            shapes.append(new_shape) # aggregate the canvas' item
+            new_shape = canvas.create_rectangle(startx, starty,event.x,event.y,
+                                        fill=tk_color_string, outline='#000000')
+            shapes.append(new_shape) # aggregate the canvas' item
+        
     
 # Subscribe handlers to the Button-1 and ButtonRelease-1 events
 canvas.bind('<Button-1>', down)
