@@ -33,12 +33,15 @@ canvas.grid(row=0, column=1, rowspan=3)
 
 from Tkinter import *
 
-v = IntVar
+v = IntVar()
 
 var1=Radiobutton(root, text = "circle", variable = v, value = 0)
 var1.grid(row = 3, column = 1)
 var2=Radiobutton(root, text = "square", variable = v, value = 1)
 var2.grid(row = 3, column = 0)
+var3=Radiobutton(root, text = "recolor", variable = v, value = 2)
+var3.grid(row = 3, column = 2)
+
 
 ######
 # Instantiate three IntVars
@@ -117,7 +120,14 @@ canvas.itemconfig(shapes[4],outline='green')
 # Initialize globals so function defs can assign to them
 startx, starty = 300, 300
 
-
+def draw(event):
+    if v.get() == 0:
+        circle(event)
+    if v.get() == 1:
+        rectangle(event)
+    if v.get() == 2:
+        changer(event)
+    
 
 # Define canvas' mouse-button event handler
 def down(event): # A mouse event will be passed in with x and y attributes
@@ -126,29 +136,32 @@ def down(event): # A mouse event will be passed in with x and y attributes
     startx = event.x # Store the mouse down coordinates in the global variables
     starty = event.y
 
-if v.get()==0:
-    def up(event):
+
+def changer(event):
+    get.new_shape
+    canvas.coords(fill = color(red_intvar, green_intvar, blue_intvar))
+
     
-        tk_color_string = color(red_intvar, green_intvar, blue_intvar)
-        d = (startx-event.x)**2 + (starty-event.y)**2  # Pythagorean theorem
-        d = int(d**.5) # square root to get distance
-        
-        if value == 0:
-            new_shape = canvas.create_rectangle(startx-d, starty-d,startx+d, starty+d,
-                                    fill=tk_color_string, outline='#000000')
-            shapes.append(new_shape) # aggregate the canvas' item
+def circle(event):
+    
+    
+    tk_color_string = color(red_intvar, green_intvar, blue_intvar)
+    d = (startx-event.x)**2 + (starty-event.y)**2  # Pythagorean theorem
+    d = int(d**.5) # square root to get distance
+    new_shape = canvas.create_oval(startx-d, starty-d,startx+d, starty+d,
+                                fill=tk_color_string, outline='#000000')
+    shapes.append(new_shape) # aggregate the canvas' item
             
-        if  v.get()==1:
-        
-            shapes.append(new_shape) # aggregate the canvas' item
-            new_shape = canvas.create_rectangle(startx, starty,event.x,event.y,
-                                        fill=tk_color_string, outline='#000000')
-            shapes.append(new_shape) # aggregate the canvas' item
+def rectangle(event):
+    tk_color_string = color(red_intvar, green_intvar, blue_intvar)      
+    new_shape = canvas.create_rectangle(startx, starty,event.x,event.y,
+                                fill=tk_color_string, outline='#000000')
+    shapes.append(new_shape) # aggregate the canvas' item
         
     
 # Subscribe handlers to the Button-1 and ButtonRelease-1 events
 canvas.bind('<Button-1>', down)
-canvas.bind('<ButtonRelease-1>', up)
+canvas.bind('<ButtonRelease-1>', draw)
 
 ######
 # Functions to transform Intvars into Tkinter color strings
